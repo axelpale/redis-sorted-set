@@ -1,1 +1,1 @@
-module.exports = require('./lib/map');
+module.exports = require('./lib/set');
