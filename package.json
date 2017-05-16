@@ -19,14 +19,14 @@
   },
   "homepage": "https://github.com/axelpale/redis-sorted-set",
   "keywords": [
-    "sorted-map",
+    "set",
     "linked-list",
     "skip-list",
-    "data",
-    "structure",
+    "ordered",
+    "sorted",
+    "collection",
     "map",
-    "search",
-    "binary"
+    "redis"
   ],
   "license": "MIT",
   "main": "./index",
