@@ -26,64 +26,63 @@ _Note:_ remember to `npm install`!
 
 ## API
 
+The API follows Redis' [Sorted Set Commands](https://redis.io/commands#sorted_set) as precisely as possible, with a few additional methods such as `.has(member)`.
+
 ```js
 var SortedSet = require('redis-sorted-set');
 
-var ss = new SortedSet();
+var z = new SortedSet();
 
 // average O(log(N))
-ss.add('5a600e16', 8);
-ss.add('5a600e17', 9);
-ss.add('5a600e18', 10); // => null
-ss.add('5a600e17', 12); // => 9
+z.add('The Matrix', 8.7); // => null
+z.add('Terminator', 8.0); // => null
+z.add('District 9', 8.0); // => null
+z.add('Ex Machina', 0.7); // => null
+z.add('Ex Machina', 7.7); // => 0.7
 
 // average O(1)
-ss.has('5a600e17'); // => true
+z.has('Terminator'); // => true
+z.has('Blade Runner'); // => false
 
 // average O(1)
-ss.get('5a600e17'); // => 12
+z.score('Ex Machina'); // => 7.7
+z.score('Blade Runner'); // => null
 
 // average O(log(N))
-ss.rem('5a600e16'); // => 8
+z.rem('Ex Machina'); // => 7.7
 
 // average O(1)
-ss.rem('5a600e16'); // => null
-
-ss.add('5a600e10', 16);
-ss.add('5a600e11', 6);
-ss.add('5a600e12', 17);
-ss.add('5a600e13', 11);
-ss.add('5a600e14', 14);
-ss.add('5a600e15', 19);
-ss.add('5a600e16', 3);
+z.rem('Ex Machina'); // => null
 
 // average O(log(N)+M) where M is the number of elements between min and max
-ss.range(14, 16); // [14-16]
-// => [{key: '5a600e14', value: 14}, {key: '5a600e10', value: 16}]
+z.rangeByScore(7, 8);
+// => ['Ex Machina', 'District 9', 'Terminator']
 
-ss.range(17); // [17-∞)
-// => [{key: '5a600e12', value: 17}, {key: '5a600e15', value: 19}]
+z.rangeByScore(8); // [8.0-∞)
+// => ['District 9', 'Terminator', 'The Matrix']
 
-// average O(log(N)+log(M)) where M as in range
-ss.count(14, 16); // => 2
+// average O(log(N)+log(M)) where M as in rangeByScore
+z.count(7, 8); // => 3
 
-// more or less indexOf for the sorted values
 // average O(log(N))
-ss.rank('5a600e16'); // => 0
-ss.rank('5a600e13'); // => 3
-ss.rank('5a600e14'); // => 5
-ss.rank('5a600e15'); // => 8
-ss.rank('5a600e19'); // => -1
+z.rank('Ex Machina'); // => 0
+z.rank('Terminator'); // => 2
+z.rank('Blade Runner'); // => null
 
 // average O(log(N)+M) where M as in range
-ss.slice(0, 3);
-// => [{key: '5a600e16', value: 3},
-//     {key: '5a600e11', value: 6},
-//     {key: '5a600e18', value: 10}]
+z.range(0, 2);
+// => ['Ex Machina', 'District 9', 'Terminator']
 
-ss.slice(-1); // => [{key: '5a600e16', value: 3}]
+z.range(0, 2, { withScores: true });
+// => [['Ex Machina', 7.7],
+//     ['District 9', 8],
+//     ['Terminator', 8]]
 
-ss.length; // => 9
+z.range(-1); // => ['The Matrix']
+
+// Set cardinality (number of elements)
+// average O(1)
+z.card(); // => 4
 ```
 
 
@@ -150,21 +149,21 @@ SortedSet.intersect(c, a, b);
 You can enable unique values with the unique option, which causes `set` to throw an error if the value provided already belongs to a different key.
 
 ```js
-var ss = new SortedSet({unique: true});
+var z = new SortedSet({unique: true});
 
-ss.add('5a600e10', 16);
-ss.add('5a600e11', 6);
-ss.add('5a600e12', 17);
-ss.add('5a600e13', 11);
-ss.add('5a600e14', 14);
-ss.add('5a600e15', 19);
-ss.add('5a600e16', 3);
-ss.add('5a600e17', 12);
-ss.add('5a600e18', 10);
+z.add('5a600e10', 16);
+z.add('5a600e11', 6);
+z.add('5a600e12', 17);
+z.add('5a600e13', 11);
+z.add('5a600e14', 14);
+z.add('5a600e15', 19);
+z.add('5a600e16', 3);
+z.add('5a600e17', 12);
+z.add('5a600e18', 10);
 
 // currently O(log(N)) because it needs to attempt to insert the value
-ss.add('5a600e19', 11); // throws
-ss.add('5a600e14', 14); // => 14
+z.add('5a600e19', 11); // throws
+z.add('5a600e14', 14); // => 14
 ```
 
 

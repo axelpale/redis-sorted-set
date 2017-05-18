@@ -7,7 +7,7 @@
     "url": "https://github.com/axelpale/redis-sorted-set/issues"
   },
   "dependencies": {},
-  "description": "a sorted map based heavily upon redis' skip list implementation",
+  "description": "A JavaScript implementation of Redis Sorted Sets.",
   "devDependencies": {
     "chai": "~3.5.0",
     "mocha": "~3.4.1"
@@ -38,5 +38,5 @@
   "scripts": {
     "test": "mocha"
   },
-  "version": "1.1.0"
+  "version": "2.0.0-alpha.1"
 }

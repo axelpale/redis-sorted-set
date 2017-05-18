@@ -6,8 +6,8 @@ describe('skip map', function() {
 
     expect(ss).to.have.length(0);
     expect(ss.toArray()).to.eql([]);
-    expect(ss.slice()).to.eql([]);
     expect(ss.range()).to.eql([]);
+    expect(ss.rangeByScore()).to.eql([]);
 
     expect(function() {
       ss.add('__proto__', 14);
@@ -29,18 +29,18 @@ describe('skip map', function() {
       key: '5a600e17',
       value: 12
     }]);
-    expect(ss.toArray()).to.eql(ss.slice());
-    expect(ss.toArray()).to.eql(ss.range());
+    expect(ss.toArray()).to.eql(ss.range(0, -1, { withScores: true }));
+    expect(ss.toArray()).to.eql(ss.rangeByScore());
 
     expect(ss.has('5a600e16')).to.be.ok;
     expect(ss.has('5a600e17')).to.be.ok;
     expect(ss.has('5a600e18')).to.be.ok;
     expect(ss.has('5a600e19')).to.not.be.ok;
 
-    expect(ss.get('5a600e16')).to.equal(8);
-    expect(ss.get('5a600e17')).to.equal(12);
-    expect(ss.get('5a600e18')).to.equal(10);
-    expect(ss.get('5a600e19')).to.equal(null);
+    expect(ss.score('5a600e16')).to.equal(8);
+    expect(ss.score('5a600e17')).to.equal(12);
+    expect(ss.score('5a600e18')).to.equal(10);
+    expect(ss.score('5a600e19')).to.equal(null);
 
     expect(ss.rem('5a600e16')).to.equal(8);
 
@@ -59,8 +59,8 @@ describe('skip map', function() {
       key: '5a600e17',
       value: 12
     }]);
-    expect(ss.toArray()).to.eql(ss.slice());
-    expect(ss.toArray()).to.eql(ss.range());
+    expect(ss.toArray()).to.eql(ss.range(0, -1, { withScores: true }));
+    expect(ss.toArray()).to.eql(ss.rangeByScore());
 
     ss.add('5a600e16', 10);
     ss.add('5a600e10', 16);
@@ -107,10 +107,10 @@ describe('skip map', function() {
       key: '5a600e15',
       value: 19
     }]);
-    expect(ss.toArray()).to.eql(ss.slice());
-    expect(ss.toArray()).to.eql(ss.range());
+    expect(ss.toArray()).to.eql(ss.range(0, -1, { withScores: true }));
+    expect(ss.toArray()).to.eql(ss.rangeByScore());
 
-    expect(ss.range(14, 16)).to.eql([{
+    expect(ss.rangeByScore(14, 16)).to.eql([{
       key: '5a600e14',
       value: 14
     }, {
@@ -177,7 +177,7 @@ describe('skip map', function() {
     });
   });
 
-  describe('#range', function() {
+  describe('#rangeByScore', function() {
     it('should support special ranges', function() {
       var ss = new SortedSet();
 
@@ -191,7 +191,7 @@ describe('skip map', function() {
       ss.add('5a600e17', 12);
       ss.add('5a600e18', 10);
 
-      expect(ss.range(14)).to.eql([{
+      expect(ss.rangeByScore(14)).to.eql([{
         key: '5a600e14',
         value: 14
       }, {
@@ -205,7 +205,7 @@ describe('skip map', function() {
         value: 19
       }]);
 
-      expect(ss.range(null, 10)).to.eql([{
+      expect(ss.rangeByScore(null, 10)).to.eql([{
         key: '5a600e16',
         value: 3
       }, {
@@ -216,8 +216,8 @@ describe('skip map', function() {
         value: 10
       }]);
 
-      expect(ss.range(-Infinity, Infinity)).to.eql(ss.toArray());
-      expect(ss.range(null, null)).to.eql(ss.toArray());
+      expect(ss.rangeByScore(-Infinity, Infinity)).to.eql(ss.toArray());
+      expect(ss.rangeByScore(null, null)).to.eql(ss.toArray());
     });
   });
 
@@ -245,42 +245,46 @@ describe('skip map', function() {
       ss.add('5a600f05', 32.0);
       ss.add('5a600f06', 32.0);
 
-      expect(ss.count()).to.eql(ss.range().length);
-      expect(ss.count(8)).to.eql(ss.range(8).length);
-      expect(ss.count(3, 7)).to.eql(ss.range(3, 7).length);
-      expect(ss.count(5, 14)).to.eql(ss.range(5, 14).length);
-      expect(ss.count(5, 5)).to.eql(ss.range(5, 5).length);
-      expect(ss.count(5, 0)).to.eql(ss.range(5, 0).length);
-      expect(ss.count(30, 32)).to.eql(ss.range(30, 32).length);
-      expect(ss.count(40)).to.eql(ss.range(40).length);
+      expect(ss.count()).to.eql(ss.rangeByScore().length);
+      expect(ss.count(8)).to.eql(ss.rangeByScore(8).length);
+      expect(ss.count(3, 7)).to.eql(ss.rangeByScore(3, 7).length);
+      expect(ss.count(5, 14)).to.eql(ss.rangeByScore(5, 14).length);
+      expect(ss.count(5, 5)).to.eql(ss.rangeByScore(5, 5).length);
+      expect(ss.count(5, 0)).to.eql(ss.rangeByScore(5, 0).length);
+      expect(ss.count(30, 32)).to.eql(ss.rangeByScore(30, 32).length);
+      expect(ss.count(40)).to.eql(ss.rangeByScore(40).length);
     });
   });
 
-  describe('#slice', function() {
+  describe('#range', function() {
     it('should support special ranges', function() {
       var ss = new SortedSet();
+      ss.add('first', 1);
+      ss.add('second', 2);
+      ss.add('third', 3);
+      ss.add('fourth', 4);
 
-      ss.add('5a600e10', 16);
-      ss.add('5a600e11', 6);
-      ss.add('5a600e12', 17);
-      ss.add('5a600e13', 11);
-      ss.add('5a600e14', 14);
-      ss.add('5a600e15', 19);
-      ss.add('5a600e16', 3);
-      ss.add('5a600e17', 12);
-      ss.add('5a600e18', 10);
+      var array = ['first', 'second', 'third', 'fourth'];
 
-      var array = ss.toArray();
+      expect(ss.range()).to.eql(array);
 
-      expect(ss.slice()).to.eql(array);
-      expect(ss.slice(2)).to.eql(array.slice(2));
-      expect(ss.slice(8)).to.eql(array.slice(8));
-      expect(ss.slice(0, 3)).to.eql(array.slice(0, 3));
-      expect(ss.slice(-1)).to.eql(array.slice(-1));
-      expect(ss.slice(-4)).to.eql(array.slice(-4));
-      expect(ss.slice(-4, -2)).to.eql(array.slice(-4, -2));
-      expect(ss.slice(-4, ss.length + 1000))
+      expect(ss.range(2)).to.eql(array.slice(2));
+      expect(ss.range(8)).to.eql(array.slice(8));
+      expect(ss.range(0, 2)).to.eql(array.slice(0, 3));
+      expect(ss.range(-1)).to.eql(['fourth']);
+      expect(ss.range(-4)).to.eql(array);
+      expect(ss.range(-4, -2)).to.eql(array.slice(0, 3));
+      expect(ss.range(-4, ss.length + 1000))
         .to.eql(array.slice(-4, ss.length + 1000));
+    });
+
+    it('should support withScores', function () {
+      var z = new SortedSet();
+      z.add('first', 1);
+      z.add('second', 2);
+
+      expect(z.range(0, 0, { withScores: true}))
+        .to.eql([{ key: 'first', value: 1 }]);
     });
   });
 
@@ -433,7 +437,7 @@ describe('skip map', function() {
       expect(ss.rank('5a600e16')).to.equal(0);
       expect(ss.rank('5a600e15')).to.equal(8);
 
-      expect(ss.rank('not in set')).to.equal(-1);
+      expect(ss.rank('not in set')).to.equal(null);
     });
   });
 
@@ -724,7 +728,7 @@ describe('skip map', function() {
       }).to.throw(/unique/);
 
       expect(ss).to.have.length(9);
-      expect(ss.get('5a600e13')).to.equal(11);
+      expect(ss.score('5a600e13')).to.equal(11);
     });
   });
 });
