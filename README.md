@@ -29,16 +29,18 @@ _Note:_ remember to `npm install`!
 The API follows Redis' [Sorted Set Commands](https://redis.io/commands#sorted_set) as precisely as possible, with a few additional methods such as `.has(member)`.
 
 ```js
+
 var SortedSet = require('redis-sorted-set');
 
 var z = new SortedSet();
 
 // average O(log(N))
-z.add('The Matrix', 8.7); // => null
 z.add('Terminator', 8.0); // => null
 z.add('District 9', 8.0); // => null
 z.add('Ex Machina', 0.7); // => null
 z.add('Ex Machina', 7.7); // => 0.7
+// alias
+z.set('The Matrix', 8.7); // => null
 
 // average O(1)
 z.has('Terminator'); // => true
@@ -47,19 +49,23 @@ z.has('Blade Runner'); // => false
 // average O(1)
 z.score('Ex Machina'); // => 7.7
 z.score('Blade Runner'); // => null
+// alias
+z.get('The Matrix'); // => 8.7
 
 // average O(log(N))
 z.rem('Ex Machina'); // => 7.7
-
 // average O(1)
 z.rem('Ex Machina'); // => null
+// alias
+z.del('Ex Machina'); // => null
 
 // average O(log(N)+M) where M is the number of elements between min and max
 z.rangeByScore(7, 8);
 // => ['Ex Machina', 'District 9', 'Terminator']
-
 z.rangeByScore(8); // [8.0-∞)
 // => ['District 9', 'Terminator', 'The Matrix']
+z.rangeByScore(8, null, { withScores: true });
+// => [['District 9', 8.0], ['Terminator', 8.0], ['The Matrix', 8.7]]
 
 // average O(log(N)+log(M)) where M as in rangeByScore
 z.count(7, 8); // => 3
@@ -72,17 +78,21 @@ z.rank('Blade Runner'); // => null
 // average O(log(N)+M) where M as in range
 z.range(0, 2);
 // => ['Ex Machina', 'District 9', 'Terminator']
-
 z.range(0, 2, { withScores: true });
 // => [['Ex Machina', 7.7],
 //     ['District 9', 8],
 //     ['Terminator', 8]]
-
 z.range(-1); // => ['The Matrix']
+// almost alias
+z.slice(0, 3);
+// => ['Ex Machina', 'District 9', 'Terminator']
 
 // Set cardinality (number of elements)
 // average O(1)
 z.card(); // => 4
+// alias
+z.length // => 4
+
 ```
 
 
