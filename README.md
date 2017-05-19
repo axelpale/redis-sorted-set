@@ -5,6 +5,7 @@ A JavaScript implementation of Redis' [Sorted Sets](https://redis.io/commands#so
 This is a fork of the brilliant but abandoned [sorted-map](https://www.npmjs.com/package/sorted-map) package by [Eli Skeggs](https://github.com/skeggse).
 
 ![A Skip List](/doc/skip-list.png?raw=true)
+
 Image: The skip list data structure allows search, insert, and removal in O(log(n)) time in average.
 
 ## Install
