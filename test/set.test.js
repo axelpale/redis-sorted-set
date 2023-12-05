@@ -1,5 +1,8 @@
 var SortedSet = require('../lib/set');
 
+var obj = {};
+var sym = Symbol();
+
 describe('skip map', function () {
   it('should support basic operations', function () {
     var z = new SortedSet();
@@ -8,10 +11,6 @@ describe('skip map', function () {
     expect(z.toArray()).to.eql([]);
     expect(z.range()).to.eql([]);
     expect(z.rangeByScore()).to.eql([]);
-
-    expect(function () {
-      z.add('__proto__', 14);
-    }).to.throw();
 
     z.add('5a600e16', 8);
     z.add('5a600e17', 9);
@@ -26,12 +25,12 @@ describe('skip map', function () {
     expect(z.has('5a600e16')).to.be.ok;
     expect(z.has('5a600e17')).to.be.ok;
     expect(z.has('5a600e18')).to.be.ok;
-    expect(z.has('5a600e19')).to.not.be.ok;
+    expect(z.has(sym)).to.not.be.ok;
 
     expect(z.score('5a600e16')).to.equal(8);
     expect(z.score('5a600e17')).to.equal(12);
     expect(z.score('5a600e18')).to.equal(10);
-    expect(z.score('5a600e19')).to.equal(null);
+    expect(z.score(sym)).to.equal(null);
 
     expect(z.rem('5a600e16')).to.equal(8);
 
@@ -53,7 +52,7 @@ describe('skip map', function () {
     z.add('5a600e11', 6);
     z.add('5a600e12', 17);
     z.add('5a600e13', 11);
-    z.add('5a600e14', 14);
+    z.add(obj, 14);
     z.add('5a600e15', 19);
     z.add('5a600e16', 3);
 
@@ -71,7 +70,7 @@ describe('skip map', function () {
       '5a600e18',
       '5a600e13',
       '5a600e17',
-      '5a600e14',
+      obj,
       '5a600e10',
       '5a600e12',
       '5a600e15',
@@ -80,7 +79,7 @@ describe('skip map', function () {
     expect(z.toArray()).to.eql(z.rangeByScore());
 
     expect(z.rangeByScore(14, 16, { withScores: true })).to.eql([
-      ['5a600e14', 14],
+      [obj, 14],
       ['5a600e10', 16],
     ]);
   });
@@ -94,14 +93,14 @@ describe('skip map', function () {
       z.add('5a600e11', 6);
       z.add('5a600e12', 17);
       z.add('5a600e13', 11);
-      z.add('5a600e14', 14);
+      z.add(obj, 14);
       z.add('5a600e15', 19);
       z.add('5a600e16', 3);
       z.add('5a600e17', 12);
       z.add('5a600e18', 10);
 
-      expect(z.add('5a600e14', null)).to.equal(14);
-      expect(z.add('5a600e19', null)).to.equal(null);
+      expect(z.add(obj, null)).to.equal(14);
+      expect(z.add(sym, null)).to.equal(null);
 
       expect(z).to.have.length(8);
     });
@@ -116,7 +115,7 @@ describe('skip map', function () {
       z.add('5a600e11', 6);
       z.add('5a600e12', 17);
       z.add('5a600e13', 11);
-      z.add('5a600e14', 14);
+      z.add(obj, 14);
       z.add('5a600e15', 19);
       z.add('5a600e16', 3);
       z.add('5a600e17', 12);
@@ -161,14 +160,14 @@ describe('skip map', function () {
       z.add('5a600e11', 6);
       z.add('5a600e12', 17);
       z.add('5a600e13', 11);
-      z.add('5a600e14', 14);
+      z.add(obj, 14);
       z.add('5a600e15', 19);
       z.add('5a600e16', 3);
       z.add('5a600e17', 12);
       z.add('5a600e18', 10);
 
       expect(z.keys()).to.eql(['5a600e16', '5a600e11', '5a600e18', '5a600e13',
-        '5a600e17', '5a600e14', '5a600e10', '5a600e12', '5a600e15']);
+        '5a600e17', obj, '5a600e10', '5a600e12', '5a600e15']);
     });
   });
 
@@ -180,14 +179,14 @@ describe('skip map', function () {
       z.add('5a600e11', 6);
       z.add('5a600e12', 17);
       z.add('5a600e13', 11);
-      z.add('5a600e14', 14);
+      z.add(obj, 14);
       z.add('5a600e15', 19);
       z.add('5a600e16', 3);
       z.add('5a600e17', 12);
       z.add('5a600e18', 10);
 
       expect(z.rangeByScore(14, null, { withScores: true })).to.eql([
-        ['5a600e14', 14],
+        [obj, 14],
         ['5a600e10', 16],
         ['5a600e12', 17],
         ['5a600e15', 19],
@@ -214,12 +213,12 @@ describe('skip map', function () {
       z.add('5a600e11', 6);
       z.add('5a600e12', 17);
       z.add('5a600e13', 11);
-      z.add('5a600e14', 14);
+      z.add(obj, 14);
       z.add('5a600e15', 19);
       z.add('5a600e16', 3);
       z.add('5a600e17', 12);
       z.add('5a600e18', 10);
-      z.add('5a600e19', 14);
+      z.add('5a600e14', 14);
       z.add('5a600f00', 30.0);
       z.add('5a600f01', 30.5);
       z.add('5a600f02', 31.0);
@@ -277,11 +276,11 @@ describe('skip map', function () {
 
       a.add('5a600e10', 16);
       a.add('5a600e12', 10);
-      a.add('5a600e14', 9);
+      a.add(obj, 9);
       a.add('5a600e15', 14);
       a.add('5a600e17', 20);
       a.add('5a600e18', 13);
-      a.add('5a600e19', 15);
+      a.add('5a600e14', 15);
       a.add('5a600e1a', 19);
       a.add('5a600e1b', 7);
       a.add('5a600e1c', 13);
@@ -290,19 +289,19 @@ describe('skip map', function () {
       b.add('5a600e10', 0);
       b.add('5a600e11', 15);
       b.add('5a600e13', 5);
-      b.add('5a600e14', 3);
+      b.add(obj, 3);
       b.add('5a600e15', 14);
       b.add('5a600e17', 12);
-      b.add('5a600e19', 12);
+      b.add('5a600e14', 12);
       b.add('5a600e1b', 16);
       b.add('5a600e1c', 12);
       b.add('5a600e1d', 17);
       b.add('5a600e1f', 3);
 
-      expect(SortedSet.intersect(a, b)).to.eql(['5a600e10', '5a600e14',
-        '5a600e17', '5a600e19', '5a600e1c', '5a600e15', '5a600e1b']);
-      expect(SortedSet.intersect(b, a)).to.eql(['5a600e1b', '5a600e14',
-        '5a600e1c', '5a600e15', '5a600e19', '5a600e10', '5a600e17']);
+      expect(SortedSet.intersect(a, b)).to.eql(['5a600e10', obj,
+        '5a600e14', '5a600e17', '5a600e1c', '5a600e15', '5a600e1b']);
+      expect(SortedSet.intersect(b, a)).to.eql(['5a600e1b', obj,
+        '5a600e1c', '5a600e15', '5a600e14', '5a600e10', '5a600e17']);
     });
 
     it('should intersect three sets', function () {
@@ -310,11 +309,11 @@ describe('skip map', function () {
 
       a.add('5a600e10', 16);
       a.add('5a600e12', 10);
-      a.add('5a600e14', 9);
+      a.add(obj, 9);
       a.add('5a600e15', 14);
       a.add('5a600e17', 20);
       a.add('5a600e18', 13);
-      a.add('5a600e19', 15);
+      a.add('5a600e14', 15);
       a.add('5a600e1a', 19);
       a.add('5a600e1b', 7);
       a.add('5a600e1c', 13);
@@ -323,10 +322,10 @@ describe('skip map', function () {
       b.add('5a600e10', 0);
       b.add('5a600e11', 15);
       b.add('5a600e13', 5);
-      b.add('5a600e14', 3);
+      b.add(obj, 3);
       b.add('5a600e15', 14);
       b.add('5a600e17', 12);
-      b.add('5a600e19', 12);
+      b.add('5a600e14', 12);
       b.add('5a600e1b', 16);
       b.add('5a600e1c', 12);
       b.add('5a600e1d', 17);
@@ -335,7 +334,7 @@ describe('skip map', function () {
       c.add('5a600e10', 7);
       c.add('5a600e12', 20);
       c.add('5a600e13', 9);
-      c.add('5a600e14', 19);
+      c.add(obj, 19);
       c.add('5a600e16', 19);
       c.add('5a600e17', 1);
       c.add('5a600e18', 18);
@@ -343,7 +342,7 @@ describe('skip map', function () {
       c.add('5a600e1c', 15);
       c.add('5a600e1f', 4);
 
-      expect(SortedSet.intersect(c, a, b)).to.eql(['5a600e10', '5a600e14',
+      expect(SortedSet.intersect(c, a, b)).to.eql(['5a600e10', obj,
         '5a600e17', '5a600e1c']);
 
       expect(SortedSet.intersect(c, a, b)).to.eql(c.intersect(a, b));
@@ -357,11 +356,11 @@ describe('skip map', function () {
 
       a.add('5a600e10', 16);
       a.add('5a600e12', 10);
-      a.add('5a600e14', 9);
+      a.add(obj, 9);
       a.add('5a600e15', 14);
       a.add('5a600e17', 20);
       a.add('5a600e18', 13);
-      a.add('5a600e19', 15);
+      a.add('5a600e14', 15);
       a.add('5a600e1a', 19);
       a.add('5a600e1b', 7);
       a.add('5a600e1c', 13);
@@ -370,10 +369,10 @@ describe('skip map', function () {
       b.add('5a600e10', 0);
       b.add('5a600e11', 15);
       b.add('5a600e13', 5);
-      b.add('5a600e14', 3);
+      b.add(obj, 3);
       b.add('5a600e15', 14);
       b.add('5a600e17', 12);
-      b.add('5a600e19', 12);
+      b.add('5a600e14', 12);
       b.add('5a600e1b', 16);
       b.add('5a600e1c', 12);
       b.add('5a600e1d', 17);
@@ -382,7 +381,7 @@ describe('skip map', function () {
       c.add('5a600e10', 7);
       c.add('5a600e12', 20);
       c.add('5a600e13', 9);
-      c.add('5a600e14', 19);
+      c.add(obj, 19);
       c.add('5a600e16', 19);
       c.add('5a600e17', 1);
       c.add('5a600e18', 18);
@@ -409,7 +408,7 @@ describe('skip map', function () {
       z.add('5a600e11', 6);
       z.add('5a600e12', 17);
       z.add('5a600e13', 11);
-      z.add('5a600e14', 14);
+      z.add(obj, 14);
       z.add('5a600e15', 19);
       z.add('5a600e16', 3);
       z.add('5a600e17', 12);
@@ -432,7 +431,7 @@ describe('skip map', function () {
       z.add('5a600e11', 6);
       z.add('5a600e12', 17);
       z.add('5a600e13', 11);
-      z.add('5a600e14', 14);
+      z.add(obj, 14);
       z.add('5a600e15', 19);
       z.add('5a600e16', 3);
       z.add('5a600e17', 12);
@@ -451,7 +450,7 @@ describe('skip map', function () {
         ['5a600e18', 10],
         ['5a600e13', 11],
         ['5a600e17', 12],
-        ['5a600e14', 14],
+        [obj, 14],
         ['5a600e10', 16],
         ['5a600e12', 17],
       ]);
@@ -464,7 +463,7 @@ describe('skip map', function () {
       z.add('5a600e11', 6);
       z.add('5a600e12', 17);
       z.add('5a600e13', 11);
-      z.add('5a600e14', 14);
+      z.add(obj, 14);
       z.add('5a600e15', 19);
       z.add('5a600e16', 3);
       z.add('5a600e17', 12);
@@ -472,7 +471,7 @@ describe('skip map', function () {
 
       expect(z.rem('5a600e11')).to.equal(6);
       expect(z.rem('5a600e13')).to.equal(11);
-      expect(z.rem('5a600e14')).to.equal(14);
+      expect(z.rem(obj)).to.equal(14);
       expect(z.rem('5a600e15')).to.equal(19);
       expect(z.rem('5a600e16')).to.equal(3);
       expect(z.rem('5a600e17')).to.equal(12);
@@ -494,7 +493,7 @@ describe('skip map', function () {
       z.add('5a600e11', 6);
       z.add('5a600e12', 17);
       z.add('5a600e13', 11);
-      z.add('5a600e14', 14);
+      z.add(obj, 14);
       z.add('5a600e15', 19);
       z.add('5a600e16', 3);
       z.add('5a600e17', 12);
@@ -518,7 +517,7 @@ describe('skip map', function () {
       z.add('5a600e11', 6);
       z.add('5a600e12', 17);
       z.add('5a600e13', 11);
-      z.add('5a600e14', 14);
+      z.add(obj, 14);
       z.add('5a600e15', 19);
       z.add('5a600e16', 3);
       z.add('5a600e17', 12);
@@ -539,7 +538,7 @@ describe('skip map', function () {
       z.add('5a600e11', 6);
       z.add('5a600e12', 17);
       z.add('5a600e13', 11);
-      z.add('5a600e14', 14);
+      z.add(obj, 14);
       z.add('5a600e15', 19);
       z.add('5a600e16', 3);
       z.add('5a600e17', 12);
@@ -563,7 +562,7 @@ describe('skip map', function () {
       z.add('5a600e11', 6);
       z.add('5a600e12', 17);
       z.add('5a600e13', 11);
-      z.add('5a600e14', 14);
+      z.add(obj, 14);
       z.add('5a600e15', 19);
       z.add('5a600e16', 3);
       z.add('5a600e17', 12);
@@ -596,14 +595,14 @@ describe('skip map', function () {
       z.add('5a600e11', 6);
       z.add('5a600e12', 17);
       z.add('5a600e13', 11);
-      z.add('5a600e14', 14);
+      z.add(obj, 14);
       z.add('5a600e15', 19);
       z.add('5a600e16', 3);
       z.add('5a600e17', 12);
       z.add('5a600e18', 10);
 
       expect(function () {
-        z.add('5a600e19', 11);
+        z.add(sym, 11);
       }).to.throw(/unique/);
 
       // quick exit test
@@ -628,7 +627,7 @@ describe('skip map', function () {
         ['5a600e18', 10],
         ['5a600e13', 11],
         ['5a600e17', 12],
-        ['5a600e14', 14],
+        [obj, 14],
         ['5a600e10', 16],
         ['5a600e12', 17],
         ['5a600e15', 19],
@@ -642,7 +641,7 @@ describe('skip map', function () {
       z.add('5a600e11', 6);
       z.add('5a600e12', 17);
       z.add('5a600e13', 11);
-      z.add('5a600e14', 14);
+      z.add(obj, 14);
       z.add('5a600e15', 19);
       z.add('5a600e16', 3);
       z.add('5a600e17', 12);

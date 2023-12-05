@@ -31,6 +31,8 @@ _Note:_ remember to `npm install`!
 
 The API follows Redis' [Sorted Set Commands](https://redis.io/commands#sorted_set) as precisely as possible, with a few additional methods such as `.has(member)`.
 
+Note that keys can be strings, symbols, or objects.
+
 ```js
 
 var SortedSet = require('redis-sorted-set');
