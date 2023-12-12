@@ -1,6 +1,6 @@
 # redis-sorted-set
 
-A JavaScript implementation of Redis' [Sorted Sets](https://redis.io/commands#sorted_set). Keeps a set of keys in order based on their score. Uses skip lists under the hood, [like Redis does](http://stackoverflow.com/a/9626334/638546).
+A JavaScript implementation of Redis' [Sorted Sets](https://redis.io/commands/?group=sorted-set). Keeps a set of keys in order based on their score. Uses skip lists under the hood, [like Redis does](http://stackoverflow.com/a/9626334/638546).
 
 This is a fork of the brilliant but abandoned [sorted-map](https://www.npmjs.com/package/sorted-map) package by [Eli Skeggs](https://github.com/skeggse).
 
