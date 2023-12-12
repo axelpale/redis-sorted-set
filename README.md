@@ -11,26 +11,17 @@ This is a fork of the brilliant but abandoned [sorted-map](https://www.npmjs.com
 
 Image: The skip list data structure allows search, insert, and removal in O(log(n)) time in average.
 
+
 ## Install
+
+From [NPM](https://www.npmjs.com/package/redis-sorted-set):
 
 ```sh
 $ npm install redis-sorted-set
 ```
 
 
-## Test
-
-Run any of the following:
-
-```sh
-$ mocha
-$ npm test
-```
-
-_Note:_ remember to `npm install`!
-
-
-## API
+## Usage
 
 The API follows Redis' [Sorted Set Commands](https://redis.io/commands#sorted_set) as precisely as possible, with a few additional methods such as `.has(member)`.
 
@@ -180,6 +171,16 @@ z.add('5a600e18', 10);
 // currently O(log(N)) because it needs to attempt to insert the value
 z.add('5a600e19', 11); // throws
 z.add('5a600e14', 14); // => 14
+```
+
+
+## Contribute
+
+Pull requests and [bug reports](https://github.com/axelpale/redis-sorted-set/issues) via [GitHub](https://github.com/axelpale/redis-sorted-set) are highly appreciated. Please test your contribution with the following scripts:
+
+```sh
+$ npm install
+$ npm test
 ```
 
 
