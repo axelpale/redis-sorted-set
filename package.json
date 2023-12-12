@@ -29,7 +29,6 @@
     "redis"
   ],
   "license": "MIT",
-  "main": "./index",
   "name": "redis-sorted-set",
   "repository": {
     "type": "git",
