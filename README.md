@@ -182,4 +182,4 @@ z.add('5a600e14', 14); // => 14
 
 ## Licence
 
-MIT
+[MIT](LICENSE)
