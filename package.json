@@ -34,7 +34,8 @@
     "url": "https://github.com/axelpale/redis-sorted-set.git"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "release": "npm run test && npm publish"
   },
   "version": "2.0.0"
 }
