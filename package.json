@@ -6,11 +6,10 @@
   "bugs": {
     "url": "https://github.com/axelpale/redis-sorted-set/issues"
   },
-  "dependencies": {},
   "description": "A JavaScript implementation of Redis Sorted Sets.",
   "devDependencies": {
-    "chai": "~3.5.0",
-    "mocha": "~3.4.1"
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0"
   },
   "directories": {
     "example": "example",
@@ -29,14 +28,14 @@
     "redis"
   ],
   "license": "MIT",
-  "main": "./index",
   "name": "redis-sorted-set",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/axelpale/redis-sorted-set.git"
+    "url": "https://github.com/axelpale/redis-sorted-set.git"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "release": "npm run test && npm publish"
   },
-  "version": "2.0.0"
+  "version": "2.0.1"
 }
