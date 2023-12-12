@@ -33,7 +33,7 @@
   "name": "redis-sorted-set",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/axelpale/redis-sorted-set.git"
+    "url": "https://github.com/axelpale/redis-sorted-set.git"
   },
   "scripts": {
     "test": "mocha"
